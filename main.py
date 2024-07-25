@@ -17,13 +17,14 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
+
 # CSVファイルからプロジェクトキーを読み込む関数
 def load_project_keys(csv_file):
     df = pd.read_csv(csv_file)
     return df["project_name"].tolist()
 
 
-project_keys = load_project_keys("project_keys.csv") 
+project_keys = load_project_keys("project_keys.csv")
 
 
 @client.event
@@ -34,7 +35,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.author == client.user:
-        return  
+        return
 
     if "linkgenerator" in message.content:
         return
@@ -51,7 +52,9 @@ async def on_message(message):
 
     # 各プロジェクトキーを検知してリンクを生成
     for project_key in project_keys:
-        pattern = re.compile(rf"({project_key}-\d+)\s+(.+?)(?=\s|$)") # 課題キー+件名のフォーマット
+        pattern = re.compile(
+            rf"({project_key}-\d+)\s+(.+?)(?=\s|$)"
+        )  # 課題キー+件名のフォーマット
         new_content = pattern.sub(
             lambda m: f"[{m.group(0)}](https://saino-inc.backlog.com/view/{m.group(1)})",
             new_content,
